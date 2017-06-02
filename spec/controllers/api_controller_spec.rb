@@ -50,6 +50,50 @@ describe ApiController do
 
         expect(JSON.parse(response.body)).to eq({ 'account_id' => 123, 'balance_in_cents' => 10_00 })
       end
+    end # account_deposit
+
+    describe 'account_withdraw' do
+      let(:account_123) { Account.find_by_account_id!(123) }
+
+      before do
+        [
+          AccountOpen.create(data: { account_id: 123, account_owner_email: 'a@a.com' }.to_json),
+          AccountDeposit.create(data: { account_id: 123, amount_in_cents: 15_00 }.to_json)
+        ].each(&:process!)
+      end
+
+      it 'works' do
+        json = {
+          command: 'account_withdraw',
+          data: {
+            account_id: 123,
+            amount_in_cents: 10_00
+          }
+        }
+
+        post :command, params: json
+
+        expect(JSON.parse(response.body)).to eq({ 'account_id' => 123, 'balance_in_cents' => 5_00 })
+      end
+
+      it 'validates the balance before withdrawing' do
+        json = {
+          command: 'account_withdraw',
+          data: {
+            account_id: 123,
+            amount_in_cents: 16_00
+          }
+        }
+
+        post :command, params: json
+
+        expect(account_123.balance_in_cents).to eq 15_00
+        expect(JSON.parse(response.body)).to include('error')
+
+        expect(Event.ordered.map(&:type)).to eq(
+          %w(AccountOpen AccountDeposit AccountWithdraw)
+        )
+      end
     end
   end
 end

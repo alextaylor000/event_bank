@@ -1,24 +1,6 @@
-# README
+# Event Bank
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A hacky little bank app for creating accounts, depositing funds, making withdrawals. Built to play around with event sourcing architecture.
 
-Things you may want to cover:
+Caveat: I don't really know what I'm doing. The purpose of this project was to hack my way through building some simple commands using event sourcing in order to wrap my head around the concepts, before going off and looking at popular implementations or frameworks. _Wheeeee!_
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...

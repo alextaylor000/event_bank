@@ -1,11 +1,11 @@
 class AccountDeposit < Event
   def process!
-    account = Account.find(account_id)
+    account = Account.find_by_account_id!(account_id)
     account.balance_in_cents += deposit_amount
     account.save!
 
     {
-      account_id: account.id,
+      account_id: account.account_id,
       balance_in_cents: account.balance_in_cents
     }
   end

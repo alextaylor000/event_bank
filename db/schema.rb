@@ -10,16 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170602161507) do
+ActiveRecord::Schema.define(version: 20170602174923) do
 
-  create_table "accounts_projection", force: :cascade do |t|
-    t.integer "account_id"
-    t.integer "balance_in_cents"
+  create_table "accounts", force: :cascade do |t|
+    t.integer  "account_id"
+    t.integer  "balance_in_cents", default: 0, null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.string   "email"
   end
 
   create_table "events", force: :cascade do |t|
-    t.string "action", null: false
-    t.string "data",   null: false
+    t.string   "type",       null: false
+    t.text     "data",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

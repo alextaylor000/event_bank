@@ -50,6 +50,10 @@ All events are stored in the `events` table, and we can take advantage of single
 
 The cool thing about this approach is how easy it makes adding new behaviour. Literally all you have to do is subclass `Event` and implement `#process`. No new controllers, no new routes, no modification of existing classes.
 
+### Future
+* Should the controller immediately persist some sort of Job/Command upon receiving a request? That way, we could retry if necessary. However, it would be tricky to make synchronous requests this way.
+
+
 ### Learnings / Questions
 
 * One awesome lightbulb moment I had: you can leverage this event-driven architecture to make really expressive tests. When you're setting up an initial state in a test, usually you might rely on factories, which may have some callbacks, or maybe you directly create objects in the database. Here, you can just create and replay the same events that you would get in your production environment! :+1:

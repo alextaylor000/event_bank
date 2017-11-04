@@ -1,6 +1,5 @@
 class AccountOpen < Event
-  def process!
-    # TODO: should creating the projection be separate?
+  def apply
     account = Account.create!(
       account_id: account_id,
       email: data.fetch(:account_owner_email)

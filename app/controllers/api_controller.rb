@@ -5,9 +5,9 @@ class ApiController < ActionController::Base
 
     event_class = command.camelize.constantize
 
-    result = event_class.
-      create!(data: data).
-      process!
+    result = event_class
+      .new(data: data)
+      .process!
 
     render json: result
   end

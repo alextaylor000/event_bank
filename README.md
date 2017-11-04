@@ -21,17 +21,24 @@ First, we set up a single endpoint, `/api`, which accepts JSON:
   }
 ```
 
-Inside the [ApiController](https://github.com/alextaylor000/event_bank/blob/master/app/controllers/api_controller.rb), we handle the request by looking up the class that matches the requested `command`, persisting the event, and then processing the event:
+Inside the [ApiController](https://github.com/alextaylor000/event_bank/blob/master/app/controllers/api_controller.rb), we handle the request by looking up the class that matches the requested `command`, and processing it:
 
 ```ruby
     command = params.fetch(:command)
     data = params.fetch(:data).to_json
     event_class = command.camelize.constantize
 
-    result = event_class.create!(data: data).process!
+    result = event_class.new(data: data).process!
 
     render json: result
 ```
+
+Processing the event does three things:
+1. Validate the event - this ensures the action can be applied to the state correctly;
+1. Apply any changes to the model;
+1. Persist the event.
+
+We only want to persist events which have succeeded. That way, we can replay the events later with confidence.
 
 All events are stored in the `events` table, and we can take advantage of single-table-inheritance to allow for a really elegant expression of each event type:
 
@@ -41,7 +48,7 @@ All events are stored in the `events` table, and we can take advantage of single
   class AccountWithdraw < Event
 ```
 
-The cool thing about this approach is how easy it makes adding new behaviour. Literally all you have to do is subclass `Event` and implement `#process!`. No new controllers, no new routes, no modification of existing classes.
+The cool thing about this approach is how easy it makes adding new behaviour. Literally all you have to do is subclass `Event` and implement `#process`. No new controllers, no new routes, no modification of existing classes.
 
 ### Learnings / Questions
 

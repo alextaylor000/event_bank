@@ -1,5 +1,5 @@
 class AccountDeposit < Event
-  def process!
+  def apply
     account = Account.find_by_account_id!(account_id)
     account.balance_in_cents += deposit_amount
     account.save!

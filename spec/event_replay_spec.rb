@@ -5,14 +5,16 @@ describe "Replaying events" do
   let(:account_456) { Account.find_by_account_id!(456) }
 
   before do
-    AccountOpen.create(data: { account_id: 123, account_owner_email: 'a@a.com' }.to_json)
-    AccountDeposit.create(data: { account_id: 123, amount_in_cents: 10_00 }.to_json)
-    AccountDeposit.create(data: { account_id: 123, amount_in_cents: 5_25 }.to_json)
+    events = [
+      AccountOpen.new(data: { account_id: 123, account_owner_email: 'a@a.com' }.to_json),
+      AccountDeposit.new(data: { account_id: 123, amount_in_cents: 10_00 }.to_json),
+      AccountDeposit.new(data: { account_id: 123, amount_in_cents: 5_25 }.to_json),
 
-    AccountOpen.create(data: { account_id: 456, account_owner_email: 'b@b.com' }.to_json)
-    AccountDeposit.create(data: { account_id: 456, amount_in_cents: 250_00 }.to_json)
+      AccountOpen.new(data: { account_id: 456, account_owner_email: 'b@b.com' }.to_json),
+      AccountDeposit.new(data: { account_id: 456, amount_in_cents: 250_00 }.to_json)
+    ]
 
-    Event.ordered.each(&:process!)
+    events.each(&:process!)
   end
 
   it 'projects the right state by replaying events in the correct order' do
@@ -25,5 +27,9 @@ describe "Replaying events" do
       email: 'b@b.com',
       balance_in_cents: 250_00
     )
+  end
+
+  it 'persists the events' do
+    expect(Event.count).to eq 5
   end
 end

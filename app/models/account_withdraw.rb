@@ -1,5 +1,5 @@
 class AccountWithdraw < Event
-  def process!
+  def apply
     if account_has_sufficient_funds?
       account.balance_in_cents -= withdrawal_amount_in_cents
       account.save!

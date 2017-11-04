@@ -2,8 +2,14 @@ class Event < ActiveRecord::Base
   # Hi, I'm an abstract class!
 
   validates_presence_of :data
-  
+
   scope :ordered, -> { order(:created_at) }
+
+  def process!
+    return unless self.valid?
+    apply
+    self.save!
+  end
 
   def command
     type
